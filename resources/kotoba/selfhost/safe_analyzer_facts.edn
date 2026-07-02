@@ -55,10 +55,10 @@
                       "Math/ceil"
                       "Math/abs"
                       "Math/sqrt"]
- :effect-ops ["kqe-assert!"
-              "kqe-retract!"
-              "kqe-get-objects"
-              "kqe-query"
+ :effect-ops ["kgraph-assert!"
+              "kgraph-retract!"
+              "kgraph-get-objects"
+              "kgraph-query"
               "llm-infer"
               "has-capability?"]
  :user-call-excluded-ops ["do"
@@ -94,7 +94,7 @@
                           "byte-append!"
                           "has-capability?"
                           "llm-infer"
-                          "kqe-assert!"
-                          "kqe-retract!"
-                          "kqe-get-objects"
-                          "kqe-query"]}
+                          "kgraph-assert!"
+                          "kgraph-retract!"
+                          "kgraph-get-objects"
+                          "kgraph-query"]}
