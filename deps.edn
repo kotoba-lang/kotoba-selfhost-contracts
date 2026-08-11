@@ -31,6 +31,30 @@
        ;; a later alias's :main-opts wins, and this one carries no deps:
        ;;   clojure -M:test:gen
        :gen {:main-opts ["-m" "kotoba.selfhost.oracle-gen"]}
+       ;; The same decisions, executed as machine code on this host's ISA.
+       ;; Separate from :test because it needs a C toolchain for the measured
+       ;; loader and about a minute to compile two modules — a suite you run to
+       ;; qualify a change, not while making one.
+       ;;
+       ;;   clojure -M:test:native            ;; the parity gate
+       ;;   clojure -M:test:native-build <dir> ;; just stage a build
+       ;;
+       ;; tender-native is TEST-ONLY here for the same reason amu is: a
+       ;; consumer that runs the interpreter must not inherit a native
+       ;; toolchain. `oracle/open-native!` resolves the host at call time, so a
+       ;; consumer that does want one adds the dependency itself.
+       :native
+       {:extra-paths ["test-native"]
+        :extra-deps {io.github.kotoba-lang/tender-native
+                     {:git/url "https://github.com/kotoba-lang/tender-native.git"
+                      ;; ab76044 splits verify-once (`prepare`) from run
+                      ;; (`invoke`); before it, every call re-verified the
+                      ;; artifact and this suite would have taken hours.
+                      ;; 1915ee1 lets a host outside the compiler repo say
+                      ;; where the reviewed loader source is.
+                      :git/sha "1915ee10a0a2af7edd252e7a0ffd67c0d4c3a167"}}
+        :main-opts ["-m" "cognitect.test-runner" "-d" "test-native"]}
+       :native-build {:main-opts ["-m" "kotoba.selfhost.native-build"]}
        ;; clj-kondo as a Clojars lib (no Homebrew/system install needed).
        :lint {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2024.11.14"}}
          :main-opts ["-m" "clj-kondo.main" "--lint" "src" "test"
