@@ -19,6 +19,17 @@ exception: it holds the decisions that belong to a seed, authored in Kotoba.
 
 - `kotoba/safe_analyzer_core.kotoba` — the safe analyzer's op classification
   over `resources/kotoba/selfhost/safe_analyzer_facts.edn`.
+- `kotoba/capability_admission_core.kotoba` — effect algebra, minimal policy,
+  policy check and admission over the same seed. Effect sets are six bits of an
+  `:i64`, so the whole algebra is integer ops and stays word-typed.
+
+`effect-bit` assigns **bit i to index i of `:effect-ops`**, so reordering that
+vector is a wire change, not a formatting change. The authority test fails on
+it; nothing else would notice.
+
+Admission and sufficiency are different questions. `admission-code` denies only
+an *empty* intersection, so a partial policy is admitted with a narrowed scope —
+ask `authority-sufficient?` before treating code 0 as "has what it needs".
 
 The seed keeps owning *which* ops are in a class; the `.kotoba` owns *what it
 means* to be in one, and `test/kotoba/selfhost/safe_analyzer_core_test.clj`
