@@ -58,6 +58,11 @@
     (is (zero? (analyzer/infer-effects []))))
   (testing "non-effect ops contribute nothing"
     (is (zero? (analyzer/infer-effects ["+" "let" "my-fn" "ns"]))))
+  (testing "the fold agrees with the artifact's own step"
+    (let [ops ["kgraph-query" "llm-infer" "ns"]]
+      (is (= (reduce (fn [m op] (oracle/call :capability-admission "infer-step" [m op]))
+                     0 ops)
+             (analyzer/infer-effects ops)))))
   (testing "the fold agrees with the artifact's own union, in any order"
     (let [ops ["kgraph-query" "llm-infer" "+" "kgraph-query"]
           expected (ir/execute (oracle/kir :capability-admission) 'effect-union
@@ -128,3 +133,26 @@
   ;; not a host copy of the ladder
   (is (= 5 (count @analyzer/denial-codes)))
   (is (= :admit (get @analyzer/denial-codes 0))))
+
+(deftest the-host-fold-authors-no-order
+  ;; A SOURCE check, because semantics cannot see this one: calling
+  ;; `effect-union` with `(effect-bit op)` is exactly `infer-step`, so a fold
+  ;; that re-authors the order of those two calls passes every behavioural
+  ;; test above. That was measured — reverting infer-effects to the two-call
+  ;; form left all 33 tests green.
+  ;;
+  ;; What the two forms do not share is where the ORDER lives. In the two-call
+  ;; form a host edit can classify and drop the result, or union before
+  ;; classifying, and only the host would be wrong. One step call has no such
+  ;; seam, and this test is what keeps it that way.
+  (let [src (slurp "src/kotoba/selfhost/analyzer.clj")
+        start (clojure.string/index-of src "(defn infer-effects")
+        _ (is start "infer-effects not found")
+        body (subs src start (or (clojure.string/index-of src "\n(defn " (inc start))
+                                 (count src)))
+        calls (set (map second (re-seq #"\"([a-z0-9-]+\?*)\"" body)))]
+    (is (contains? calls "infer-step")
+        "infer-effects must drive the artifact's step")
+    (is (not-any? calls ["effect-bit" "effect-union"])
+        (str "infer-effects calls " (pr-str (disj calls "infer-step"))
+             " — combining them here puts the order back in the host"))))
