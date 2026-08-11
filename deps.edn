@@ -1,5 +1,13 @@
+;; The KIR interpreter is a RUNTIME dependency: src/ executes the shipped
+;; kotoba/*.kir.edn artifacts through it. The compiler (amu) is not — it only
+;; produces those artifacts, under :test. That is the split ADR-reliability-t63
+;; names: the compiler is a build/analysis tool, the artifact is what runs.
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.12.0"}}
+ :deps {org.clojure/clojure {:mvn/version "1.12.0"}
+        io.github.kotoba-lang/kotoba-kir
+        {:git/url "https://github.com/kotoba-lang/kotoba-kir.git"
+         ;; must match the kir amu compiled the artifacts with
+         :git/sha "d58972da61758584a5bec0e863bcb3ea6fdd6c64"}}
  :aliases
  {:test {:extra-paths ["test"]
          ;; amu (the compiler; renamed from kotoba-lang/compiler) is TEST-ONLY.
@@ -19,6 +27,10 @@
                        ;; west pin as of 2026-08-11 (#576, native word ops).
                        :git/sha "76d4d9019cf6ecccecc812fca9db8b09fc2d3056"}}
          :main-opts ["-m" "cognitect.test-runner"]}
+       ;; Regenerate the shipped KIR from kotoba/*.kotoba. Combine with :test —
+       ;; a later alias's :main-opts wins, and this one carries no deps:
+       ;;   clojure -M:test:gen
+       :gen {:main-opts ["-m" "kotoba.selfhost.oracle-gen"]}
        ;; clj-kondo as a Clojars lib (no Homebrew/system install needed).
        :lint {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2024.11.14"}}
          :main-opts ["-m" "clj-kondo.main" "--lint" "src" "test"
