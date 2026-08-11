@@ -4,13 +4,27 @@
 ;; WHAT THIS COVERS, AND WHAT IT DOES NOT
 ;; --------------------------------------
 ;; The analyzer removed with the Rust crates covered effect inference,
-;; minimal-policy, policy-check and admission-check. Of those, the DECISIONS
-;; are here. What is not here is the AST walk that folds a call graph into an
-;; inferred mask — that is a traversal over a collection, i.e. mechanism, and
-;; it stays host until the native admission gate takes collections. The host
-;; folds `effect-bit` over the ops it finds and hands the mask back.
+;; minimal-policy, policy-check and admission-check. The decisions are here,
+;; including inference's — see `infer-step`.
 ;;
-;; Do not read the split as "inference is done". It is the algebra that moved.
+;; What is NOT here is the iteration. That is not the same thing, and an
+;; earlier version of this header got it wrong: it said the fold "stays host
+;; until the native admission gate takes collections", which misattributed the
+;; boundary twice. Measured 2026-08-11:
+;;
+;;   - native already has bounded homogeneous vectors and a string index; they
+;;     are deliberately PRIVATE handles that may not cross a kexe export, since
+;;     an external caller cannot construct, validate, inspect or release one.
+;;     That is a safety property, not a missing feature.
+;;   - no backend has a sequence PARAMETER type at all, so this was never a
+;;     native-specific limit.
+;;   - and none of it matters for the fold, because a fold's decision content
+;;     is its transition, not its loop.
+;;
+;; So the transition is here and word-typed, the loop is the host's, and the
+;; boundary is `state + event -> next-state` rather than a collection crossing
+;; an export. Nothing needs to be widened for inference to be a Kotoba
+;; decision.
 ;;
 ;; WHY BITMASKS
 ;; ------------
@@ -66,7 +80,7 @@
 
 (ns capability-admission-core
   (:export [facts-schema
-            known-effect-mask effect-bit effect-union effect-member?
+            known-effect-mask effect-bit effect-union infer-step effect-member?
             effect-complement
             undeclared-effects declaration-satisfied?
             unused-grants minimal-policy
@@ -79,7 +93,7 @@
             test-declaration-check test-unused-grants
             test-effective-scope test-attenuation test-production-policy
             test-deny-ladder test-effect-is-not-authority
-            test-partial-authority-admits]))
+            test-partial-authority-admits test-infer-step]))
 
 (defn facts-schema [] :string
   "kotoba.selfhost.safe-analyzer-facts.v0")
@@ -110,6 +124,21 @@
   ;; but it is a backend gap, not a style, and this should become `(bit-or a b)`
   ;; when :js grows the op. Measured 2026-08-11 against amu 76d4d90.
   (- (+ a b) (bit-and a b)))
+
+(defn infer-step [acc :i64 op :string] :i64
+  ;; The whole decision content of effect inference: given what has been
+  ;; inferred so far and one more op, what is inferred now.
+  ;;
+  ;; A host `reduce` over this is a loop with nothing left to get wrong — it
+  ;; cannot mis-classify an op, assign the wrong bit, or union incorrectly,
+  ;; because it does none of those. Contrast the shape this replaces, where the
+  ;; host called `effect-bit` and `effect-union` itself and the ORDER of those
+  ;; calls was host-authored.
+  ;;
+  ;; Word-typed on purpose, and it costs nothing: i64 and string are both
+  ;; native-admissible, so inference qualifies on native ISA the same as the
+  ;; rest of this file. A vector parameter would have forfeited that.
+  (effect-union acc (effect-bit op)))
 
 (defn effect-member? [mask :i64 bit :i64] :bool
   (if (= bit (bit-and mask bit)) true false))
@@ -209,6 +238,18 @@
            (= 0 (effect-bit "ns"))
            (= 63 (known-effect-mask)))
     1 0))
+
+(defn test-infer-step [] :i64
+  ;; folding by hand here is the point: the host's reduce does exactly this
+  (let [a (infer-step 0 "llm-infer")]
+    (let [b (infer-step a "+")]
+      (let [c (infer-step b "kgraph-query")]
+        (if (and (= 16 a)
+                 (= 16 b)                        ; a non-effect op changes nothing
+                 (= 24 c)
+                 (= c (infer-step c "llm-infer")) ; idempotent
+                 (= 0 (infer-step 0 "ns")))
+          1 0)))))
 
 (defn test-effect-algebra [] :i64
   (if (and (= 3 (effect-union 1 2))

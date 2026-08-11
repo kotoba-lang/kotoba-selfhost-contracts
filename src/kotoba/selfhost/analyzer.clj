@@ -53,14 +53,21 @@
 (defn infer-effects
   "Fold the ops a program reaches into an effect mask.
 
-   This fold is the whole of what stayed host. It contributes no knowledge: the
-   bit for an op and the union of two masks both come from the artifact, so a
-   change to either is a change to one file."
+   What is host here is `reduce` and nothing else. The transition is
+   `infer-step` in the artifact, so this cannot mis-classify an op, assign it
+   the wrong bit, or union incorrectly — it does none of those.
+
+   It used to call `effect-bit` and `effect-union` separately, which left the
+   ORDER of those two host-authored: a fold that classified and dropped the
+   result, or unioned before classifying, would still have type-checked here.
+   One step call has no such seam.
+
+   Not a collection crossing the boundary, deliberately. Native vector and
+   string-index handles are private and may not cross a kexe export, so a
+   sequence parameter would forfeit native qualification to buy back something
+   this shape already has."
   [ops]
-  (reduce (fn [mask op]
-            (oracle/call admission "effect-union" [mask (effect-bit op)]))
-          0
-          ops))
+  (reduce (fn [mask op] (oracle/call admission "infer-step" [mask op])) 0 ops))
 
 (defn known-effect-mask [] (oracle/call admission "known-effect-mask" []))
 

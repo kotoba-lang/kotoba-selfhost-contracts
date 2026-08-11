@@ -41,6 +41,12 @@
    :effects #{},
    :body (- (+ a b) (bit-and a b)),
    :param-types [:i64 :i64]}
+  {:name infer-step,
+   :params [acc op],
+   :result :i64,
+   :effects #{},
+   :body (effect-union acc (effect-bit op)),
+   :param-types [:i64 :string]}
   {:name effect-member?,
    :params [mask bit],
    :result :bool,
@@ -223,6 +229,42 @@
       __kotoba_and_5))
     1
     0),
+   :param-types []}
+  {:name test-infer-step,
+   :params [],
+   :result :i64,
+   :effects #{},
+   :body
+   (let
+    [a (infer-step 0 "llm-infer")]
+    (let
+     [b (infer-step a "+")]
+     (let
+      [c (infer-step b "kgraph-query")]
+      (if
+       (let
+        [__kotoba_and_5 (= 16 a)]
+        (if
+         __kotoba_and_5
+         (let
+          [__kotoba_and_4 (= 16 b)]
+          (if
+           __kotoba_and_4
+           (let
+            [__kotoba_and_3 (= 24 c)]
+            (if
+             __kotoba_and_3
+             (let
+              [__kotoba_and_2 (= c (infer-step c "llm-infer"))]
+              (if
+               __kotoba_and_2
+               (= 0 (infer-step 0 "ns"))
+               __kotoba_and_2))
+             __kotoba_and_3))
+           __kotoba_and_4))
+         __kotoba_and_5))
+       1
+       0)))),
    :param-types []}
   {:name test-effect-algebra,
    :params [],
@@ -506,6 +548,7 @@
   known-effect-mask
   effect-bit
   effect-union
+  infer-step
   effect-member?
   effect-complement
   undeclared-effects
@@ -534,7 +577,8 @@
   test-production-policy
   test-deny-ladder
   test-effect-is-not-authority
-  test-partial-authority-admits],
+  test-partial-authority-admits
+  test-infer-step],
  :schemas nil,
  :effects #{},
  :blocks [],
