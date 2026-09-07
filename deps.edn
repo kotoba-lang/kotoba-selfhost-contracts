@@ -4,8 +4,8 @@
 ;; names: the compiler is a build/analysis tool, the artifact is what runs.
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.12.0"}
-        io.github.kotoba-lang/kotoba-kir
-        {:git/url "https://github.com/kotoba-lang/kotoba-kir.git"
+        io.github.kotoba-lang/osaho
+        {:git/url "https://github.com/kotoba-lang/osaho.git"
          ;; must match the kir amu compiled the artifacts with
          :git/sha "d58972da61758584a5bec0e863bcb3ea6fdd6c64"}}
  :aliases
