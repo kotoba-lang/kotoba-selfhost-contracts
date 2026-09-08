@@ -19,7 +19,7 @@
   is the only thing that would say so."
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [clojure.test :refer [deftest is testing use-fixtures]]
             [kotoba.kir :as ir]
             [kotoba.selfhost.native-build :as native-build]

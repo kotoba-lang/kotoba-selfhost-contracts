@@ -7,7 +7,7 @@
 ;; other authority tests cannot see this, by construction.
 
 (ns kotoba.selfhost.oracle-authority-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.lang.text] [clojure.test :refer [deftest is testing]]
             [kotoba.compiler.core :as compiler]
             [kotoba.kir :as ir]
             [kotoba.selfhost.analyzer :as analyzer]
@@ -26,7 +26,7 @@
   ;; a .kotoba added without an oracles entry would never ship
   (let [on-disk (->> (file-seq (clojure.java.io/file "kotoba"))
                      (filter #(.isFile %))
-                     (filter #(clojure.string/ends-with? (.getName %) ".kotoba"))
+                     (filter #(kotoba.lang.text/ends-with? (.getName %) ".kotoba"))
                      (map #(.getPath %))
                      set)]
     (is (= on-disk (set (vals oracle/oracles)))
@@ -146,9 +146,9 @@
   ;; classifying, and only the host would be wrong. One step call has no such
   ;; seam, and this test is what keeps it that way.
   (let [src (slurp "src/kotoba/selfhost/analyzer.clj")
-        start (clojure.string/index-of src "(defn infer-effects")
+        start (kotoba.lang.text/index-of src "(defn infer-effects")
         _ (is start "infer-effects not found")
-        body (subs src start (or (clojure.string/index-of src "\n(defn " (inc start))
+        body (subs src start (or (kotoba.lang.text/index-of src "\n(defn " (inc start))
                                  (count src)))
         calls (set (map second (re-seq #"\"([a-z0-9-]+\?*)\"" body)))]
     (is (contains? calls "infer-step")

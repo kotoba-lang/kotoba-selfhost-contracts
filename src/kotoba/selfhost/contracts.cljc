@@ -2,7 +2,7 @@
   "EDN authority for Kotoba selfhost seed contracts."
   (:require #?(:clj [clojure.edn :as edn])
             #?(:clj [clojure.java.io :as io])
-            [clojure.string :as str]))
+            [kotoba.lang.text :as str]))
 
 (def seed-names
   ["aiueos_provider_catalog"
