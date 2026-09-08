@@ -14,7 +14,7 @@
   release: a real deployment signs with a real key and ships a trust file that
   predates the artifact."
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [kotoba.artifact.runtime-identity :as runtime-identity]
             [kotoba.compiler.core :as compiler]
             [kotoba.selfhost.oracle :as oracle]
@@ -24,7 +24,7 @@
 (defn host-target
   "The native target for the ISA this process is on."
   []
-  (if (contains? #{"aarch64" "arm64"} (str/lower-case (System/getProperty "os.arch")))
+  (if (contains? #{"aarch64" "arm64"} (str/lower (System/getProperty "os.arch")))
     :aarch64-kotoba-v1
     :x86_64-kotoba-v1))
 
