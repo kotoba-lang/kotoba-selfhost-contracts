@@ -2,7 +2,7 @@
 ;; equal to the source it claims to be compiled from.
 ;;
 ;; Without it the failure is silent and one-directional: editing a .kotoba and
-;; forgetting `clojure -M:test:gen` leaves production executing the OLD
+;; forgetting `kbb -M:test:gen` leaves production executing the OLD
 ;; decision while every other test — which compiles from source — passes. The
 ;; other authority tests cannot see this, by construction.
 
@@ -20,7 +20,7 @@
                                                  :wasm32-kotoba-v1 {}))]
         (is (= fresh (oracle/kir id))
             (str "resources/" (oracle/resource-path id)
-                 " is stale — run `clojure -M:test:gen`"))))))
+                 " is stale — run `kbb -M:test:gen`"))))))
 
 (deftest every-source-ships-and-every-artifact-has-a-source
   ;; a .kotoba added without an oracles entry would never ship

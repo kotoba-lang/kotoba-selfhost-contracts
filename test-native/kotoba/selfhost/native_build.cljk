@@ -1,7 +1,7 @@
 (ns kotoba.selfhost.native-build
   "Build the shipped decisions for this host's ISA.
 
-      clojure -M:native-build [directory]     ;; defaults to target/native
+      kbb -M:native-build [directory]     ;; defaults to target/native
 
   Same compile path as `oracle-gen`, different target: that one emits the KIR
   the interpreter reads, this one emits machine code for the host and signs it.

@@ -1,7 +1,7 @@
 (ns kotoba.selfhost.oracle-gen
   "Regenerate the shipped KIR from kotoba/*.kotoba.
 
-      clojure -M:test:gen
+      kbb -M:test:gen
 
   Runs under :test because the compiler lives there. The artifacts it writes are
   what production loads, so nothing here may transform them — same compile path

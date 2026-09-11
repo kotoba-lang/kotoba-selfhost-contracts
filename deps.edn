@@ -34,15 +34,15 @@
          :main-opts ["-m" "cognitect.test-runner"]}
        ;; Regenerate the shipped KIR from kotoba/*.kotoba. Combine with :test —
        ;; a later alias's :main-opts wins, and this one carries no deps:
-       ;;   clojure -M:test:gen
+       ;;   kbb -M:test:gen
        :gen {:main-opts ["-m" "kotoba.selfhost.oracle-gen"]}
        ;; The same decisions, executed as machine code on this host's ISA.
        ;; Separate from :test because it needs a C toolchain for the measured
        ;; loader and about a minute to compile two modules — a suite you run to
        ;; qualify a change, not while making one.
        ;;
-       ;;   clojure -M:test:native            ;; the parity gate
-       ;;   clojure -M:test:native-build <dir> ;; just stage a build
+       ;;   kbb -M:test:native            ;; the parity gate
+       ;;   kbb -M:test:native-build <dir> ;; just stage a build
        ;;
        ;; tender-native is TEST-ONLY here for the same reason amu is: a
        ;; consumer that runs the interpreter must not inherit a native

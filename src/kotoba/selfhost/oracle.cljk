@@ -8,7 +8,7 @@
 
   The compiler is NOT here. It produced the artifacts under `:test` and is not
   on this classpath (ADR-reliability-t63: the compiler is a build/analysis tool;
-  the artifact is what runs). Regenerate with `clojure -M:test:gen`.
+  the artifact is what runs). Regenerate with `kbb -M:test:gen`.
 
   A missing or unreadable artifact throws rather than falling back to a host
   reimplementation. A silent fallback is how a decision stops being the one that
@@ -49,7 +49,7 @@
   (let [path (resource-path id)
         r (io/resource path)]
     (when-not r
-      (throw (ex-info "missing shipped oracle artifact — run `clojure -M:test:gen`"
+      (throw (ex-info "missing shipped oracle artifact — run `kbb -M:test:gen`"
                       {:oracle id :path path})))
     (edn/read-string (slurp r))))
 
