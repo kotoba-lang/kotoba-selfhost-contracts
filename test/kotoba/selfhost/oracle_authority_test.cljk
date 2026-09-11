@@ -145,7 +145,7 @@
   ;; form a host edit can classify and drop the result, or union before
   ;; classifying, and only the host would be wrong. One step call has no such
   ;; seam, and this test is what keeps it that way.
-  (let [src (slurp "src/kotoba/selfhost/analyzer.clj")
+  (let [src (slurp "src/kotoba/selfhost/analyzer.cljk")
         start (kotoba.lang.text/index-of src "(defn infer-effects")
         _ (is start "infer-effects not found")
         body (subs src start (or (kotoba.lang.text/index-of src "\n(defn " (inc start))

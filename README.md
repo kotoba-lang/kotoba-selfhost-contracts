@@ -32,7 +32,7 @@ an *empty* intersection, so a partial policy is admitted with a narrowed scope â
 ask `authority-sufficient?` before treating code 0 as "has what it needs".
 
 The seed keeps owning *which* ops are in a class; the `.kotoba` owns *what it
-means* to be in one, and `test/kotoba/selfhost/safe_analyzer_core_test.clj`
+means* to be in one, and `test/kotoba/selfhost/safe_analyzer_core_test.cljk`
 refuses to let either move alone. The compiler is a test-only dependency
 (ADR-reliability-t63): nothing in `src/` requires it.
 
