@@ -67,7 +67,7 @@
 ;;
 ;; A native build directory holds, for each oracle id, `<id>.signed.kexe`, plus
 ;; one `trust.edn`, `runtime.edn`, and the measured `kotoba-loader` they were
-;; produced against. `test-native/kotoba/selfhost/native_build.clj` writes one.
+;; produced against. `test-native/kotoba/selfhost/native_build.cljk` writes one.
 ;;
 ;; tender-native is resolved at call time rather than required, so consuming
 ;; this library does not drag a native toolchain onto every classpath. A caller
