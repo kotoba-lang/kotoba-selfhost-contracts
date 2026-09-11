@@ -1,7 +1,7 @@
 (ns kotoba.selfhost.native-parity-test
   "The shipped decisions, executed as machine code on this host's ISA.
 
-      clojure -M:native
+      kbb -M:native
 
   Why this is a separate suite: it needs a C toolchain to build the measured
   loader and about a minute to compile two modules, so it does not belong in

@@ -9,7 +9,7 @@ Launchers and adapters read these resources; they do not own the values.
 Run:
 
 ```sh
-clojure -M:test
+kbb -M:test
 ```
 
 ## `kotoba/` — decisions, not seeds
@@ -64,8 +64,8 @@ The same decisions also compile to machine code for the host ISA. Nothing in
 which one answered.
 
 ```sh
-clojure -M:test:native-build target/native   # compile, sign, stage
-clojure -M:test:native                       # the parity gate
+kbb -M:test:native-build target/native   # compile, sign, stage
+kbb -M:test:native                       # the parity gate
 ```
 
 ```clojure
@@ -92,13 +92,13 @@ interpreting it.
 After editing any `kotoba/*.kotoba`:
 
 ```sh
-clojure -M:test:gen     # regenerate the shipped artifact
-clojure -M:test         # the drift test fails if you forget
+kbb -M:test:gen     # regenerate the shipped artifact
+kbb -M:test         # the drift test fails if you forget
 ```
 
 Cross-target run (`:jvm-kir`, `:js`, `:wasm`), from an `amu` checkout:
 
 ```sh
-clojure -M:run test  <path>/kotoba/safe_analyzer_core.kotoba
-clojure -M:run check <path>/kotoba/safe_analyzer_core.kotoba --profile pure-product
+kbb -M:run test  <path>/kotoba/safe_analyzer_core.kotoba
+kbb -M:run check <path>/kotoba/safe_analyzer_core.kotoba --profile pure-product
 ```
