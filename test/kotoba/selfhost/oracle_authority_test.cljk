@@ -7,7 +7,7 @@
 ;; other authority tests cannot see this, by construction.
 
 (ns kotoba.selfhost.oracle-authority-test
-  (:require [kotoba.lang.text] [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.lang.text] [kotoba.test :refer [deftest is testing]]
             [kotoba.compiler.core :as compiler]
             [kotoba.kir :as ir]
             [kotoba.selfhost.analyzer :as analyzer]
