@@ -8,8 +8,8 @@
   as the authority tests, pretty-printed EDN, no post-processing. If this file
   and the tests disagreed about how to compile, the tests would be checking
   something other than what ships."
-  (:require [clojure.java.io :as io]
-            [clojure.pprint :as pp]
+  (:require [kotoba.io :as io]
+            [kotoba.pprint :as pp]
             [kotoba.compiler.core :as compiler]
             [kotoba.selfhost.oracle :as oracle])
   (:gen-class))
@@ -23,7 +23,7 @@
   (let [out (io/file "resources" (oracle/resource-path id))]
     (io/make-parents out)
     (spit out (with-out-str (pp/pprint (compile-kir source-path))))
-    (.getPath out)))
+    (io/path out)))
 
 (defn regenerate-all! []
   (mapv (fn [[id src]] (write-artifact! id src)) (sort-by key oracle/oracles)))
