@@ -12,7 +12,7 @@
 ;; The compiler is test-only (ADR-reliability-t63).
 
 (ns kotoba.selfhost.capability-admission-core-test
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [clojure.java.io :as io]
             [kotoba.test :refer [deftest is testing]]
             [kotoba.compiler.core :as compiler]
