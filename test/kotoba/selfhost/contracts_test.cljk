@@ -1,5 +1,5 @@
 (ns kotoba.selfhost.contracts-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.selfhost.contracts :as contracts]))
 
 (deftest selfhost-seeds-load-and-validate
