@@ -17,7 +17,7 @@
   by `safe_analyzer_core_test`; the native column is what is new. If native and
   the interpreter ever disagree, exactly one of them is what shipped, and this
   is the only thing that would say so."
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [clojure.java.io :as io]
             [kotoba.lang.text :as str]
             [kotoba.test :refer [deftest is testing use-fixtures]]

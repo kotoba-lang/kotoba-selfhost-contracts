@@ -33,7 +33,7 @@
   and then ~20-50 ms per call, nearly all of it process spawn. Native is the
   right engine when the work per call is large, and the interpreter is the
   right one for a word-typed predicate. Neither is `faster` unqualified."
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [clojure.java.io :as io]
             [kotoba.kir :as ir]))
 

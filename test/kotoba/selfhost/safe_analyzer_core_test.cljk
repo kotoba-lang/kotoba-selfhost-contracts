@@ -16,7 +16,7 @@
 ;; The compiler is test-only (ADR-reliability-t63). Nothing in src/ requires it.
 
 (ns kotoba.selfhost.safe-analyzer-core-test
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [clojure.java.io :as io]
             [kotoba.lang.text :as str]
             [kotoba.test :refer [deftest is testing]]

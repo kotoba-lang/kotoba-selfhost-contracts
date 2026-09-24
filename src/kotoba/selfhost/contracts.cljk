@@ -1,6 +1,6 @@
 (ns kotoba.selfhost.contracts
   "EDN authority for Kotoba selfhost seed contracts."
-  (:require #?(:clj [clojure.edn :as edn])
+  (:require #?(:clj [kotoba.lang.edn :as edn])
             #?(:clj [clojure.java.io :as io])
             [kotoba.lang.text :as str]))
 
