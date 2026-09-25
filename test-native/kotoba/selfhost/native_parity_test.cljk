@@ -18,7 +18,7 @@
   the interpreter ever disagree, exactly one of them is what shipped, and this
   is the only thing that would say so."
   (:require [kotoba.lang.edn :as edn]
-            [clojure.java.io :as io]
+            [kotoba.io :as io]
             [kotoba.lang.text :as str]
             [kotoba.test :refer [deftest is testing use-fixtures]]
             [kotoba.kir :as ir]
